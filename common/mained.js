@@ -25577,6 +25577,9 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
+//
+//
 
 exports.default = {
 	data: function data() {
@@ -25585,12 +25588,14 @@ exports.default = {
 			page: 1,
 			limit: 10,
 			newss: [],
+			newssTime: [],
 			showLoading: true
 		};
 	},
 
 	computed: {},
 	methods: {
+		//获取信息
 		getlistInfo: function getlistInfo() {
 			var type = this.$store.state.type;
 			//					console.log(type)
@@ -25612,11 +25617,15 @@ exports.default = {
 					success: function success(data) {
 						self.newss = self.newss.concat(data.list);
 						self.showLoading = false;
-						//								console.log(data)
+						console.log(data.list.time);
+						self.newssTime = self.newssTime.concat(data.list.time);
+						console.log(self.newssTime);
 					}
 				});
 			}, 500);
 		},
+
+		//下拉刷新
 		dropdown: function dropdown() {
 			//					console.log($("#dropdown").get(0).scrollTop)
 			var refreshEl = $("#dropdown").get(0);
@@ -25628,9 +25637,47 @@ exports.default = {
 				this.page++;
 				this.getlistInfo();
 			}
+		},
+
+		//自定义过滤器处理时间
+		getDateDiff: function getDateDiff(dateTimeStamp) {
+			dateTimeStamp = new Date(Date.parse(dateTimeStamp.replace(/-/g, "/")));
+			dateTimeStamp = dateTimeStamp.getTime();
+
+			var result = "";
+			var minute = 1000 * 60;
+			var hour = minute * 60;
+			var day = hour * 24;
+			var halfamonth = day * 15;
+			var month = day * 30;
+			var now = new Date().getTime();
+			var diffValue = now - dateTimeStamp;
+			if (diffValue < 0) {
+				return;
+			}
+			var monthC = diffValue / month;
+			var weekC = diffValue / (7 * day);
+			var dayC = diffValue / day;
+			var hourC = diffValue / hour;
+			var minC = diffValue / minute;
+			if (monthC >= 1) {
+				result = "" + parseInt(monthC) + "月前";
+			} else if (weekC >= 1) {
+				result = "" + parseInt(weekC) + "周前";
+			} else if (dayC >= 1) {
+				result = "" + parseInt(dayC) + "天前";
+			} else if (hourC >= 1) {
+				result = "" + parseInt(hourC) + "小时前";
+			} else if (minC >= 1) {
+				result = "" + parseInt(minC) + "分钟前";
+			} else {
+				result = "刚刚";
+			}
+			return result;
 		}
 	},
 	mounted: function mounted() {
+
 		this.getlistInfo();
 		console.log(this.$route.path
 		//				滚动加载
@@ -25760,7 +25807,7 @@ exports = module.exports = __webpack_require__(1)(true);
 
 
 // module
-exports.push([module.i, "\n.eContent {\n\tposition: absolute;\n\ttop: 48px;\n\tleft: 0;\n\tright: 0;\n\tmax-width: 450px;\n\tmargin: auto;\n\tbox-sizing: border-box;\n\tpadding: 0 20px;\n\toverflow: auto;\n\theight: 100%;\n\tborder: 1px solid #474a4f;\n}\n.eContent::-webkit-scrollbar-track\n{\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\n\tbackground-color: #ccc;\n}\n.eContent::-webkit-scrollbar\n{\n\twidth: 2px;\n\tbackground-color: #474a4f;\n}\n.eContent::-webkit-scrollbar-thumb\n{\n\tbackground-color: #474a4f;\n}\n.time{\n\tfont-size: 14px;\n}\n.loading {\n\twidth: 80px;\n\theight: 80px;\n\tposition: fixed;\n\tleft: 50%;\n\ttop: 50%;\n\tmargin-left: -40px;\n\tmargin-top: -80px;\n}\n@keyframes rotating {\nfrom {\n\t\ttransform: rotate(0)\n}\nto {\n\t\ttransform: rotate(360deg)\n}\n}\n.loading img {\n\twidth: 100%;\n\theight: 100%;\n\t/*animation: rotating 1.5s linear infinite;*/\n}\n.listInfo {\n\twidth: 100%;\n\theight: 120px;\n\tborder: 1px solid #474a4f;\n\tborder-radius: 15px;\n}\n.listInfo:first-child {\n\tmargin-top: 20px;\n}\n.listInfo .eTitle {\n\tfloat: left;\n\twidth: 50%;\n\tmargin-left: 5%;\n}\n.listInfo p {\n\tfont-size: 14px;\n\tline-height: 1.5;\n\tword-wrap: break-word;\n\twidth: 100%;\n\theight: 85px;\n\tmargin: 0;\n\tbox-sizing: border-box;\n\tpadding-top: 20px;\n}\n.listImg {\n\twidth: 45%;\n\theight: 120px;\n\tdisplay: inline-block;\n\tfloat: right;\n\tpadding: 15px 10px;\n\tbox-sizing: border-box;\n}\n.listInfo .listImg img {\n\twidth: 100%;\n\theight: 100%;\n}\n.jump {\n\tcolor: black;\n}\n", "", {"version":3,"sources":["E:/vue项目/museui/template/elist.vue?58010e94"],"names":[],"mappings":";AAoFA;CACA,mBAAA;CACA,UAAA;CACA,QAAA;CACA,SAAA;CACA,iBAAA;CACA,aAAA;CACA,uBAAA;CACA,gBAAA;CACA,eAAA;CACA,aAAA;CACA,0BAAA;CACA;AACA;;CAEA,kDAAA;CACA,uBAAA;CACA;AAEA;;CAEA,WAAA;CACA,0BAAA;CACA;AAEA;;CAEA,0BAAA;CACA;AACA;CACA,gBAAA;CACA;AACA;CACA,YAAA;CACA,aAAA;CACA,gBAAA;CACA,UAAA;CACA,SAAA;CACA,mBAAA;CACA,kBAAA;CACA;AAEA;AACA;EACA,oBAAA;CACA;AACA;EACA,yBAAA;CACA;CACA;AAEA;CACA,YAAA;CACA,aAAA;CACA,6CAAA;CACA;AAEA;CACA,YAAA;CACA,cAAA;CACA,0BAAA;CACA,oBAAA;CACA;AAEA;CACA,iBAAA;CACA;AAEA;CACA,YAAA;CACA,WAAA;CACA,gBAAA;CACA;AAEA;CACA,gBAAA;CACA,iBAAA;CACA,sBAAA;CACA,YAAA;CACA,aAAA;CACA,UAAA;CACA,uBAAA;CACA,kBAAA;CACA;AAEA;CACA,WAAA;CACA,cAAA;CACA,sBAAA;CACA,aAAA;CACA,mBAAA;CACA,uBAAA;CACA;AAEA;CACA,YAAA;CACA,aAAA;CACA;AAEA;CACA,aAAA;CACA","file":"elist.vue","sourcesContent":["<template>\n\t<div id=\"dropdown\" class=\"eContent\">\n\t\t<div class=\"loading\" v-if=\"showLoading\"><img :src=\"loadImg\" /></div>\n\t\t<div v-for=\"news in newss\">\n\t\t\t<div class=\"listInfo\">\n\t\t\t\t<div class=\"eTitle\">\n\t\t\t\t\t<router-link class=\"jump\" :to=\"'/detail/'+news.id\">\n\t\t\t\t\t\t<p v-html=\"news.title\"></p>\n\t\t\t\t\t</router-link>\n\t\t\t\t\t<span class=\"time\" v-html=\"news.time\"></span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"listImg\">\n\t\t\t\t\t<img :src=\"news.imgurl\" />\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</template>\n<script>\n\texport default {\n\t\tdata() {\n\t\t\t\treturn {\n\t\t\t\t\tloadImg: require(\"../img/loading.gif\"),\n\t\t\t\t\tpage: 1,\n\t\t\t\t\tlimit: 10,\n\t\t\t\t\tnewss: [],\n\t\t\t\t\tshowLoading: true\n\t\t\t\t}\n\n\t\t\t},\n\t\t\tcomputed: {\n\n\t\t\t},\n\t\t\tmethods: {\n\t\t\t\tgetlistInfo() {\n\t\t\t\t\tvar type = this.$store.state.type;\n\t\t\t\t\t//\t\t\t\t\tconsole.log(type)\n\t\t\t\t\tthis.showLoading = true;\n\t\t\t\t\tif(this.$route.path == \"/index/travel\") {\n\t\t\t\t\t\ttype = \"travel\"\n\t\t\t\t\t}\n\t\t\t\t\tvar self = this;\n\t\t\t\t\tsetTimeout(function() {\n\t\t\t\t\t\t$.ajax({\n\t\t\t\t\t\t\ttype: \"GET\",\n\t\t\t\t\t\t\turl: \"http://wangyi.butterfly.mopaasapp.com/news/api\",\n\t\t\t\t\t\t\tdata: {\n\t\t\t\t\t\t\t\ttype: type,\n\t\t\t\t\t\t\t\tpage: self.page,\n\t\t\t\t\t\t\t\tlimit: self.limit\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\tdataType: \"json\",\n\t\t\t\t\t\t\tsuccess: function(data) {\n\t\t\t\t\t\t\t\tself.newss = self.newss.concat(data.list)\n\t\t\t\t\t\t\t\tself.showLoading = false\n\t\t\t\t\t\t\t\t\t//\t\t\t\t\t\t\t\tconsole.log(data)\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t})\n\t\t\t\t\t}, 500);\n\t\t\t\t},\n\t\t\t\tdropdown() {\n\t\t\t\t\t//\t\t\t\t\tconsole.log($(\"#dropdown\").get(0).scrollTop)\n\t\t\t\t\tvar refreshEl = $(\"#dropdown\").get(0)\n\t\t\t\t\tvar height = refreshEl.clientHeight;\n\t\t\t\t\tvar scrollTop = refreshEl.scrollTop;\n\t\t\t\t\tvar scrollHeight = refreshEl.scrollHeight;\n\t\t\t\t\t//滚动刷新条件\n\t\t\t\t\tif(scrollHeight - scrollTop - height <= 10) {\n\t\t\t\t\t\tthis.page++;\n\t\t\t\t\t\tthis.getlistInfo()\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t},\n\t\t\tmounted() {\n\t\t\t\tthis.getlistInfo();\n\t\t\t\tconsole.log(this.$route.path)\n\t\t\t\t\t//\t\t\t\t滚动加载\n\t\t\t\t\t//\t\t\t\tconsole.log($(\"#dropdown\").get(0).scrollHeight)\n\t\t\t\t$(\"#dropdown\").get(0).addEventListener(\"scroll\", this.dropdown)\n\n\t\t\t},\n\t}\n</script>\n<style>\n\t.eContent {\n\t\tposition: absolute;\n\t\ttop: 48px;\n\t\tleft: 0;\n\t\tright: 0;\n\t\tmax-width: 450px;\n\t\tmargin: auto;\n\t\tbox-sizing: border-box;\n\t\tpadding: 0 20px;\n\t\toverflow: auto;\n\t\theight: 100%;\n\t\tborder: 1px solid #474a4f;\n\t}\n\t.eContent::-webkit-scrollbar-track\n\t{\n\t\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\n\t\tbackground-color: #ccc;\n\t}\n\t\n\t.eContent::-webkit-scrollbar\n\t{\n\t\twidth: 2px;\n\t\tbackground-color: #474a4f;\n\t}\n\t\n\t.eContent::-webkit-scrollbar-thumb\n\t{\n\t\tbackground-color: #474a4f;\n\t}\n\t.time{\n\t\tfont-size: 14px;\n\t}\n\t.loading {\n\t\twidth: 80px;\n\t\theight: 80px;\n\t\tposition: fixed;\n\t\tleft: 50%;\n\t\ttop: 50%;\n\t\tmargin-left: -40px;\n\t\tmargin-top: -80px;\n\t}\n\t\n\t@keyframes rotating {\n\t\tfrom {\n\t\t\ttransform: rotate(0)\n\t\t}\n\t\tto {\n\t\t\ttransform: rotate(360deg)\n\t\t}\n\t}\n\t\n\t.loading img {\n\t\twidth: 100%;\n\t\theight: 100%;\n\t\t/*animation: rotating 1.5s linear infinite;*/\n\t}\n\t\n\t.listInfo {\n\t\twidth: 100%;\n\t\theight: 120px;\n\t\tborder: 1px solid #474a4f;\n\t\tborder-radius: 15px;\n\t}\n\t\n\t.listInfo:first-child {\n\t\tmargin-top: 20px;\n\t}\n\t\n\t.listInfo .eTitle {\n\t\tfloat: left;\n\t\twidth: 50%;\n\t\tmargin-left: 5%;\n\t}\n\t\n\t.listInfo p {\n\t\tfont-size: 14px;\n\t\tline-height: 1.5;\n\t\tword-wrap: break-word;\n\t\twidth: 100%;\n\t\theight: 85px;\n\t\tmargin: 0;\n\t\tbox-sizing: border-box;\n\t\tpadding-top: 20px;\n\t}\n\t\n\t.listImg {\n\t\twidth: 45%;\n\t\theight: 120px;\n\t\tdisplay: inline-block;\n\t\tfloat: right;\n\t\tpadding: 15px 10px;\n\t\tbox-sizing: border-box;\n\t}\n\t\n\t.listInfo .listImg img {\n\t\twidth: 100%;\n\t\theight: 100%;\n\t}\n\t\n\t.jump {\n\t\tcolor: black;\n\t}\n</style>"],"sourceRoot":""}]);
+exports.push([module.i, "\n.eContent {\n\tposition: absolute;\n\ttop: 48px;\n\tleft: 0;\n\tright: 0;\n\tmax-width: 450px;\n\tmargin: auto;\n\tbox-sizing: border-box;\n\tpadding: 0 20px;\n\toverflow: auto;\n\theight: 100%;\n\tborder: 1px solid #474a4f;\n}\n.eContent::-webkit-scrollbar-track\n{\n\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\n\tbackground-color: #ccc;\n}\n.eContent::-webkit-scrollbar\n{\n\twidth: 2px;\n\tbackground-color: #474a4f;\n}\n.eContent::-webkit-scrollbar-thumb\n{\n\tbackground-color: #474a4f;\n}\n.loading {\n\twidth: 80px;\n\theight: 80px;\n\tposition: fixed;\n\tleft: 50%;\n\ttop: 50%;\n\tmargin-left: -40px;\n\tmargin-top: -80px;\n}\n@keyframes rotating {\nfrom {\n\t\ttransform: rotate(0)\n}\nto {\n\t\ttransform: rotate(360deg)\n}\n}\n.loading img {\n\twidth: 100%;\n\theight: 100%;\n\tanimation: rotating 1.5s linear infinite;\n}\n.listInfo {\n\twidth: 100%;\n\theight: 120px;\n\tborder: 1px solid #474a4f;\n\tborder-radius: 15px;\n}\n.listInfo:first-child {\n\tmargin-top: 20px;\n}\n.listInfo .eTitle {\n\tfloat: left;\n\twidth: 50%;\n\tmargin-left: 5%;\n}\n.listInfo .eTitle p{\n}\n.listInfo .eTitle .time{font-size: 12px;\n}\n.listInfo p {\n\tfont-size: 16px;\n\toverflow: hidden;\n\ttext-overflow: ellipsis;\n\t-webkit-line-clamp: 2;\n\tword-wrap: break-word;\n\twidth: 100%;\n\theight: 60px;\n\tmargin: 0;\n\tline-height: 30px;\n\tbox-sizing: border-box;\n\tmargin-top: 20px;\n\tdisplay: -webkit-box;\n\t-webkit-box-orient: vertical;\n}\n.listImg {\n\twidth: 45%;\n\theight: 120px;\n\tdisplay: inline-block;\n\tfloat: right;\n\tpadding: 15px 10px;\n\tbox-sizing: border-box;\n}\n.listInfo .listImg img {\n\twidth: 100%;\n\theight: 100%;\n}\n.jump {\n\tcolor: black;\n}\n", "", {"version":3,"sources":["E:/vue项目/museui/template/elist.vue?79505357"],"names":[],"mappings":";AAmIA;CACA,mBAAA;CACA,UAAA;CACA,QAAA;CACA,SAAA;CACA,iBAAA;CACA,aAAA;CACA,uBAAA;CACA,gBAAA;CACA,eAAA;CACA,aAAA;CACA,0BAAA;CACA;AACA;;CAEA,kDAAA;CACA,uBAAA;CACA;AAEA;;CAEA,WAAA;CACA,0BAAA;CACA;AAEA;;CAEA,0BAAA;CACA;AAEA;CACA,YAAA;CACA,aAAA;CACA,gBAAA;CACA,UAAA;CACA,SAAA;CACA,mBAAA;CACA,kBAAA;CACA;AAEA;AACA;EACA,oBAAA;CACA;AACA;EACA,yBAAA;CACA;CACA;AAEA;CACA,YAAA;CACA,aAAA;CACA,yCAAA;CACA;AAEA;CACA,YAAA;CACA,cAAA;CACA,0BAAA;CACA,oBAAA;CAEA;AAEA;CACA,iBAAA;CACA;AAEA;CACA,YAAA;CACA,WAAA;CACA,gBAAA;CACA;AACA;CAEA;AACA,wBAAA,gBAAA;CAAA;AACA;CACA,gBAAA;CACA,iBAAA;CACA,wBAAA;CACA,sBAAA;CACA,sBAAA;CACA,YAAA;CACA,aAAA;CACA,UAAA;CACA,kBAAA;CACA,uBAAA;CACA,iBAAA;CACA,qBAAA;CACA,6BAAA;CACA;AAEA;CACA,WAAA;CACA,cAAA;CACA,sBAAA;CACA,aAAA;CACA,mBAAA;CACA,uBAAA;CACA;AAEA;CACA,YAAA;CACA,aAAA;CACA;AAEA;CACA,aAAA;CACA","file":"elist.vue","sourcesContent":["<template>\n\t<div id=\"dropdown\" class=\"eContent\">\n\t\t<div class=\"loading\" v-if=\"showLoading\"><img :src=\"loadImg\" /></div>\n\t\t<div v-for=\"news in newss\">\n\t\t\t<div class=\"listInfo\">\n\t\t\t\t<div class=\"eTitle\">\n\t\t\t\t\t<router-link class=\"jump\" :to=\"'/detail/'+news.id\">\n\t\t\t\t\t\t<p v-html=\"news.title\"></p>\n\t\t\t\t\t</router-link>\n\t\t\t\t\t<!--<span v-html=\"news.time\"></span>-->\n\t\t\t\t\t<span class=\"time\">\n\t\t\t\t\t\t{{getDateDiff(news.time)}}\n\t\t\t\t\t</span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"listImg\">\n\t\t\t\t\t<img :src=\"news.imgurl\" />\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</template>\n<script>\n\texport default {\n\t\tdata() {\n\t\t\t\treturn {\n\t\t\t\t\tloadImg: require(\"../img/loading.gif\"),\n\t\t\t\t\tpage: 1,\n\t\t\t\t\tlimit: 10,\n\t\t\t\t\tnewss: [],\n\t\t\t\t\tnewssTime:[],\n\t\t\t\t\tshowLoading: true\n\t\t\t\t}\n\n\t\t\t},\n\t\t\tcomputed: {\n\n\t\t\t},\n\t\t\tmethods: {\n\t\t\t\t//获取信息\n\t\t\t\tgetlistInfo() {\n\t\t\t\t\tvar type = this.$store.state.type;\n\t\t\t\t\t//\t\t\t\t\tconsole.log(type)\n\t\t\t\t\tthis.showLoading = true;\n\t\t\t\t\tif(this.$route.path == \"/index/travel\") {\n\t\t\t\t\t\ttype = \"travel\"\n\t\t\t\t\t}\n\t\t\t\t\tvar self = this;\n\t\t\t\t\tsetTimeout(function() {\n\t\t\t\t\t\t$.ajax({\n\t\t\t\t\t\t\ttype: \"GET\",\n\t\t\t\t\t\t\turl: \"http://wangyi.butterfly.mopaasapp.com/news/api\",\n\t\t\t\t\t\t\tdata: {\n\t\t\t\t\t\t\t\ttype: type,\n\t\t\t\t\t\t\t\tpage: self.page,\n\t\t\t\t\t\t\t\tlimit: self.limit\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\tdataType: \"json\",\n\t\t\t\t\t\t\tsuccess: function(data) {\n\t\t\t\t\t\t\t\tself.newss = self.newss.concat(data.list)\n\t\t\t\t\t\t\t\tself.showLoading = false\n\t\t\t\t\t\t\t\tconsole.log(data.list.time)\n\t\t\t\t\t\t\t\tself.newssTime = self.newssTime.concat(data.list.time)\n\t\t\t\t\t\t\t\tconsole.log(self.newssTime)\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t})\n\t\t\t\t\t}, 500);\n\t\t\t\t},\n\t\t\t\t//下拉刷新\n\t\t\t\tdropdown() {\n\t\t\t\t\t//\t\t\t\t\tconsole.log($(\"#dropdown\").get(0).scrollTop)\n\t\t\t\t\tvar refreshEl = $(\"#dropdown\").get(0)\n\t\t\t\t\tvar height = refreshEl.clientHeight;\n\t\t\t\t\tvar scrollTop = refreshEl.scrollTop;\n\t\t\t\t\tvar scrollHeight = refreshEl.scrollHeight;\n\t\t\t\t\t//滚动刷新条件\n\t\t\t\t\tif(scrollHeight - scrollTop - height <= 10) {\n\t\t\t\t\t\tthis.page++;\n\t\t\t\t\t\tthis.getlistInfo()\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t//自定义过滤器处理时间\n\t\t\t\tgetDateDiff(dateTimeStamp){\n\t\t\t\t   \tdateTimeStamp = new Date(Date.parse(dateTimeStamp.replace(/-/g, \"/\")));\n\t\t\t\t   \tdateTimeStamp = dateTimeStamp.getTime();\n\t\t\t\t\t\n\t\t\t\t\tvar result = \"\";\n\t\t\t\t\tvar minute = 1000 * 60;\n\t\t\t\t\tvar hour = minute * 60;\n\t\t\t\t\tvar day = hour * 24;\n\t\t\t\t\tvar halfamonth = day * 15;\n\t\t\t\t\tvar month = day * 30;\n\t\t\t\t\tvar now = new Date().getTime();\n\t\t\t\t\tvar diffValue = now - dateTimeStamp;\n\t\t\t\t\tif(diffValue < 0){return;}\n\t\t\t\t\tvar monthC =diffValue/month;\n\t\t\t\t\tvar weekC =diffValue/(7*day);\n\t\t\t\t\tvar dayC =diffValue/day;\n\t\t\t\t\tvar hourC =diffValue/hour;\n\t\t\t\t\tvar minC =diffValue/minute;\n\t\t\t\t\tif(monthC>=1){\n\t\t\t\t\t\tresult=\"\" + parseInt(monthC) + \"月前\";\n\t\t\t\t\t}\n\t\t\t\t\telse if(weekC>=1){\n\t\t\t\t\t\tresult=\"\" + parseInt(weekC) + \"周前\";\n\t\t\t\t\t}\n\t\t\t\t\telse if(dayC>=1){\n\t\t\t\t\t\tresult=\"\"+ parseInt(dayC) +\"天前\";\n\t\t\t\t\t}\n\t\t\t\t\telse if(hourC>=1){\n\t\t\t\t\t\tresult=\"\"+ parseInt(hourC) +\"小时前\";\n\t\t\t\t\t}\n\t\t\t\t\telse if(minC>=1){\n\t\t\t\t\t\tresult=\"\"+ parseInt(minC) +\"分钟前\";\n\t\t\t\t\t}else {\n\t\t\t\t\t\tresult=\"刚刚\";\n\t\t\t\t\t}\n\t\t\t\t\treturn result;\n\t\t\t\t}\n\t\t\t},\n\t\t\tmounted() {\n\t\t\t\t\n\t\t\t\tthis.getlistInfo();\n\t\t\t\tconsole.log(this.$route.path)\n\t\t\t\t\t//\t\t\t\t滚动加载\n\t\t\t\t\t//\t\t\t\tconsole.log($(\"#dropdown\").get(0).scrollHeight)\n\t\t\t\t$(\"#dropdown\").get(0).addEventListener(\"scroll\", this.dropdown)\n\n\t\t\t},\n\t}\n</script>\n<style>\n\t.eContent {\n\t\tposition: absolute;\n\t\ttop: 48px;\n\t\tleft: 0;\n\t\tright: 0;\n\t\tmax-width: 450px;\n\t\tmargin: auto;\n\t\tbox-sizing: border-box;\n\t\tpadding: 0 20px;\n\t\toverflow: auto;\n\t\theight: 100%;\n\t\tborder: 1px solid #474a4f;\n\t}\n\t.eContent::-webkit-scrollbar-track\n\t{\n\t\t-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);\n\t\tbackground-color: #ccc;\n\t}\n\t\n\t.eContent::-webkit-scrollbar\n\t{\n\t\twidth: 2px;\n\t\tbackground-color: #474a4f;\n\t}\n\t\n\t.eContent::-webkit-scrollbar-thumb\n\t{\n\t\tbackground-color: #474a4f;\n\t}\n\t\n\t.loading {\n\t\twidth: 80px;\n\t\theight: 80px;\n\t\tposition: fixed;\n\t\tleft: 50%;\n\t\ttop: 50%;\n\t\tmargin-left: -40px;\n\t\tmargin-top: -80px;\n\t}\n\t\n\t@keyframes rotating {\n\t\tfrom {\n\t\t\ttransform: rotate(0)\n\t\t}\n\t\tto {\n\t\t\ttransform: rotate(360deg)\n\t\t}\n\t}\n\t\n\t.loading img {\n\t\twidth: 100%;\n\t\theight: 100%;\n\t\tanimation: rotating 1.5s linear infinite;\n\t}\n\t\n\t.listInfo {\n\t\twidth: 100%;\n\t\theight: 120px;\n\t\tborder: 1px solid #474a4f;\n\t\tborder-radius: 15px;\n\t\t\n\t}\n\t\n\t.listInfo:first-child {\n\t\tmargin-top: 20px;\n\t}\n\t\n\t.listInfo .eTitle {\n\t\tfloat: left;\n\t\twidth: 50%;\n\t\tmargin-left: 5%;\n\t}\n\t.listInfo .eTitle p{\n\t\t\n\t}\n\t.listInfo .eTitle .time{font-size: 12px;}\n\t.listInfo p {\n\t\tfont-size: 16px;\n\t\toverflow: hidden;\n\t\ttext-overflow: ellipsis;\n\t\t-webkit-line-clamp: 2;\n\t\tword-wrap: break-word;\n\t\twidth: 100%;\n\t\theight: 60px;\n\t\tmargin: 0;\n\t\tline-height: 30px;\n\t\tbox-sizing: border-box;\n\t\tmargin-top: 20px;\n\t\tdisplay: -webkit-box;\n\t\t-webkit-box-orient: vertical;\n\t}\n\t\n\t.listImg {\n\t\twidth: 45%;\n\t\theight: 120px;\n\t\tdisplay: inline-block;\n\t\tfloat: right;\n\t\tpadding: 15px 10px;\n\t\tbox-sizing: border-box;\n\t}\n\t\n\t.listInfo .listImg img {\n\t\twidth: 100%;\n\t\theight: 100%;\n\t}\n\t\n\t.jump {\n\t\tcolor: black;\n\t}\n</style>"],"sourceRoot":""}]);
 
 // exports
 
@@ -26992,11 +27039,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "innerHTML": _vm._s(news.title)
       }
     })]), _vm._v(" "), _c('span', {
-      staticClass: "time",
-      domProps: {
-        "innerHTML": _vm._s(news.time)
-      }
-    })], 1), _vm._v(" "), _c('div', {
+      staticClass: "time"
+    }, [_vm._v("\n\t\t\t\t\t" + _vm._s(_vm.getDateDiff(news.time)) + "\n\t\t\t\t")])], 1), _vm._v(" "), _c('div', {
       staticClass: "listImg"
     }, [_c('img', {
       attrs: {

@@ -7,7 +7,10 @@
 					<router-link class="jump" :to="'/detail/'+news.id">
 						<p v-html="news.title"></p>
 					</router-link>
-					<span class="time" v-html="news.time"></span>
+					<!--<span v-html="news.time"></span>-->
+					<span class="time">
+						{{getDateDiff(news.time)}}
+					</span>
 				</div>
 				<div class="listImg">
 					<img :src="news.imgurl" />
@@ -24,6 +27,7 @@
 					page: 1,
 					limit: 10,
 					newss: [],
+					newssTime:[],
 					showLoading: true
 				}
 
@@ -32,6 +36,7 @@
 
 			},
 			methods: {
+				//获取信息
 				getlistInfo() {
 					var type = this.$store.state.type;
 					//					console.log(type)
@@ -53,11 +58,14 @@
 							success: function(data) {
 								self.newss = self.newss.concat(data.list)
 								self.showLoading = false
-									//								console.log(data)
+								console.log(data.list.time)
+								self.newssTime = self.newssTime.concat(data.list.time)
+								console.log(self.newssTime)
 							}
 						})
 					}, 500);
 				},
+				//下拉刷新
 				dropdown() {
 					//					console.log($("#dropdown").get(0).scrollTop)
 					var refreshEl = $("#dropdown").get(0)
@@ -69,9 +77,48 @@
 						this.page++;
 						this.getlistInfo()
 					}
+				},
+				//自定义过滤器处理时间
+				getDateDiff(dateTimeStamp){
+				   	dateTimeStamp = new Date(Date.parse(dateTimeStamp.replace(/-/g, "/")));
+				   	dateTimeStamp = dateTimeStamp.getTime();
+					
+					var result = "";
+					var minute = 1000 * 60;
+					var hour = minute * 60;
+					var day = hour * 24;
+					var halfamonth = day * 15;
+					var month = day * 30;
+					var now = new Date().getTime();
+					var diffValue = now - dateTimeStamp;
+					if(diffValue < 0){return;}
+					var monthC =diffValue/month;
+					var weekC =diffValue/(7*day);
+					var dayC =diffValue/day;
+					var hourC =diffValue/hour;
+					var minC =diffValue/minute;
+					if(monthC>=1){
+						result="" + parseInt(monthC) + "月前";
+					}
+					else if(weekC>=1){
+						result="" + parseInt(weekC) + "周前";
+					}
+					else if(dayC>=1){
+						result=""+ parseInt(dayC) +"天前";
+					}
+					else if(hourC>=1){
+						result=""+ parseInt(hourC) +"小时前";
+					}
+					else if(minC>=1){
+						result=""+ parseInt(minC) +"分钟前";
+					}else {
+						result="刚刚";
+					}
+					return result;
 				}
 			},
 			mounted() {
+				
 				this.getlistInfo();
 				console.log(this.$route.path)
 					//				滚动加载
@@ -111,9 +158,7 @@
 	{
 		background-color: #474a4f;
 	}
-	.time{
-		font-size: 14px;
-	}
+	
 	.loading {
 		width: 80px;
 		height: 80px;
@@ -136,7 +181,7 @@
 	.loading img {
 		width: 100%;
 		height: 100%;
-		/*animation: rotating 1.5s linear infinite;*/
+		animation: rotating 1.5s linear infinite;
 	}
 	
 	.listInfo {
@@ -144,6 +189,7 @@
 		height: 120px;
 		border: 1px solid #474a4f;
 		border-radius: 15px;
+		
 	}
 	
 	.listInfo:first-child {
@@ -155,16 +201,24 @@
 		width: 50%;
 		margin-left: 5%;
 	}
-	
+	.listInfo .eTitle p{
+		
+	}
+	.listInfo .eTitle .time{font-size: 12px;}
 	.listInfo p {
-		font-size: 14px;
-		line-height: 1.5;
+		font-size: 16px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
 		word-wrap: break-word;
 		width: 100%;
-		height: 85px;
+		height: 60px;
 		margin: 0;
+		line-height: 30px;
 		box-sizing: border-box;
-		padding-top: 20px;
+		margin-top: 20px;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
 	}
 	
 	.listImg {
