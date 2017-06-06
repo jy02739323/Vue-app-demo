@@ -11,10 +11,10 @@
 <p align=center>NewsAPP</p>
 
 ##
-此vue-NewsApp是一个使用 vue2.0,vue-router,vuex,各种loader插件 和 webpack 打包的 html5 web 应用, 使用 ES6 进行编写,并使用了缓存以及懒加载等技术. 后端使用网易云新闻 提供的API.  [ Live Demo](https://e-greehe.github.io/vue-app-demo/common)
+此vue-NewsApp是一个使用 vue2.0,vue-router,vuex,各种loader插件 和 webpack 打包的 html5 web 应用, 使用 ES6 进行编写,并使用了缓存以及懒加载等技术. 后端使用网易云新闻 提供的API.  [ Live Demo](https://jy02739323.github.io/Vue-app-demo/common)
 
 ##  安装（git）
-克隆项目地址并下载（需要已安装 [git](https://git-scm.com/downloads) ）,点击预览[查看效果](https://e-greehe.github.io/vue-app-demo/common/#/index/travel)
+克隆项目地址并下载（需要已安装 [git](https://git-scm.com/downloads) ）,点击预览[查看效果](https://jy02739323.github.io/Vue-app-demo/common/#/index/travel)
 
 ```
     git clone git@github.com:E-GreeHe/vue-app-demo.git
@@ -24,7 +24,7 @@
 ```
     npm install
 ```
-启动服务(webpack监听)
+
 ```
     npm run dev
 ```
